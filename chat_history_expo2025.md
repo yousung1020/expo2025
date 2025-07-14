@@ -503,29 +503,49 @@
 
 ---
 
-### 주제: Google 로그인 API 연동
+### 주제: Google 로그인 API 연동 (설정 및 디버깅)
 
-**90. Google 로그인 API 연동 방법 문의**
+**90. Google 로그인 API 연동 시작**
 
-*   **사용자 질문:** 구글 로그인 API를 장고 백엔드와 연동하는 방법을 알려달라고 요청했습니다.
-*   **Gemini 답변:** `django-allauth`를 활용한 구글 로그인 연동 계획(GCP 설정, Django 프로젝트 설정, 마이그레이션, 관리자 페이지 설정, 프론트엔드 연동)을 제시했습니다.
+*   **사용자 질문:** 구글 로그인 API를 만들어보고 싶다고 요청했습니다.
+*   **Gemini 답변:** `django-allauth`를 이용한 구글 로그인 구현을 시작했습니다. `settings.py`와 `urls.py`를 수정하고, 마이그레이션의 필요성을 안내했습니다.
 
-**91. Google Cloud Platform (GCP) 설정 진행**
+**91. `allauth` 설정값 의미 설명**
 
-*   **사용자 질문:** 계획에 따라 진행하겠다고 동의했습니다.
-*   **Gemini 답변:** GCP에서 OAuth 동의 화면 구성 및 OAuth 클라이언트 ID 발급(클라이언트 ID, 클라이언트 보안 비밀번호 확보)에 대한 상세한 지침을 제공했습니다.
+*   **사용자 질문:** `LOGIN_REDIRECT_URL`, `SOCIALACCOUNT_PROVIDERS` 등 `settings.py`에 추가된 설정들의 의미를 질문했습니다.
+*   **Gemini 답변:** 각 설정(로그인/로그아웃 후 리다이렉트 URL, 소셜 계정 제공자별 설정, 정보 요청 범위(SCOPE), 인증 파라미터, 앱 정보)의 역할과 의미를 상세히 설명했습니다.
 
-**92. `django-allauth` 설정 방법 문의**
+**92. `extra_data` 필드의 재확인**
 
-*   **사용자 질문:** `allauth` 설정 방법을 문의했습니다.
-*   **Gemini 답변:** `pip install django-allauth allauth-google`을 통한 패키지 설치, `settings.py`에 `INSTALLED_APPS`, `AUTHENTICATION_BACKENDS`, `SITE_ID`, `LOGIN_REDIRECT_URL`, `ACCOUNT_LOGOUT_REDIRECT_URL`, `SOCIALACCOUNT_PROVIDERS` 설정 추가, `urls.py`에 `allauth.urls` 포함, `python manage.py migrate`를 통한 마이그레이션 실행 지침을 제공했습니다. 특히 `SOCIALACCOUNT_PROVIDERS`의 `client_id`와 `secret`을 GCP에서 발급받은 값으로 교체해야 함을 강조했습니다.
+*   **사용자 질문:** 구글 로그인 시에도 카카오처럼 `SocialAccount`의 `extra_data` 필드에 사용자 정보가 JSON으로 저장되는지 질문했습니다.
+*   **Gemini 답변:** 네, 정확히 맞습니다. 제공자만 다를 뿐, `django-allauth`가 데이터를 저장하고 관리하는 방식은 완전히 동일함을 확인하고 예시 코드를 제공했습니다.
 
-**93. `settings.py` 및 `allauth` 설정 상세 설명 요청**
+**93. OAuth 2.0과 데이터 형식의 관계**
 
-*   **사용자 질문:** `settings.py`의 내용과 `allauth` 설정에 대해 상세 설명을 요청했습니다.
-*   **Gemini 답변:** `settings.py`의 전반적인 역할과 `INSTALLED_APPS`, `AUTHENTICATION_BACKENDS`, `SITE_ID`, `LOGIN_REDIRECT_URL`, `ACCOUNT_LOGOUT_REDIRECT_URL`, `SOCIALACCOUNT_PROVIDERS` 각 설정의 의미와 `allauth`에서의 중요성을 상세히 설명했습니다.
+*   **사용자 질문:** 넘어오는 데이터의 형식이 OAuth 2.0 규격에 의해 정해지는지, 아니면 구글이 정하는지 질문했습니다.
+*   **Gemini 답변:** 매우 훌륭한 질문임을 강조하며, **프로세스 표준(OAuth 2.0)**과 **데이터 형식(각 제공자)**을 분리하여 설명했습니다. OAuth 2.0은 '안전하게 인증 토큰을 전달하는 방법(How)'을, 구글 등 각 제공자는 '어떤 내용의 데이터를 어떤 구조로 줄지(What)'를 결정한다고 비유를 통해 설명했습니다.
 
-**94. `allauth`의 Google 로그인 API 지원 및 지원되는 소셜 로그인 목록 문의**
+**94. 마이그레이션 필요성 재확인**
 
-*   **사용자 질문:** `allauth`가 Google 로그인 API를 지원하는지, 그리고 지원되는 다른 소셜 로그인 제공자들은 어떤 것들이 있는지 문의했습니다.
-*   **Gemini 답변:** `django-allauth`가 Google 로그인 API를 직접 지원하며, 다양한 소셜 로그인 제공자(Facebook, GitHub, Kakao, Naver, Apple 등)를 통합된 인터페이스로 지원함을 설명하고 주요 목록을 제시했습니다.
+*   **사용자 질문:** `settings.py`만 수정했는데 왜 마이그레이션을 해야 하는지 질문했습니다.
+*   **Gemini 답변:** `INSTALLED_APPS`에 `allauth` 관련 앱을 추가했기 때문에, 이 앱들이 필요로 하는 `SocialAccount` 같은 모델들의 데이터베이스 테이블을 실제로 생성하기 위해 `migrate` 명령이 반드시 필요함을 설명했습니다.
+
+**95. `ImproperlyConfigured` 오류 디버깅**
+
+*   **사용자 질문:** `allauth.account.middleware.AccountMiddleware`를 `MIDDLEWARE`에 추가하라는 `ImproperlyConfigured` 오류가 발생했습니다.
+*   **Gemini 답변:** 미들웨어의 개념을 설명하고, `settings.py`의 `MIDDLEWARE` 리스트에 해당 미들웨어를 추가하여 문제를 해결했습니다.
+
+**96. `ModuleNotFoundError` 디버깅 (의존성 라이브러리)**
+
+*   **사용자 질문:** `jwt`, `cryptography` 모듈이 없다는 `ModuleNotFoundError`가 연달아 발생했습니다.
+*   **Gemini 답변:** `django-allauth` → `PyJWT` → `cryptography`로 이어지는 라이브러리 의존성 관계를 '레고 조립'에 비유하여 설명했습니다. 각 라이브러리가 왜 필요한지(JWT 검증, 암호화 엔진) 설명하고, `pip install`을 통해 문제를 해결했습니다.
+
+**97. 마이그레이션 성공 및 다음 단계 진행**
+
+*   **사용자 질문:** 마이그레이션에 성공했고, 데이터베이스에 테이블이 잘 반영된 것을 확인했습니다. 다음 단계를 질문했습니다.
+*   **Gemini 답변:** 관리자 계정 생성(`createsuperuser`), 개발 서버 실행(`runserver`), 그리고 관리자 페이지에서 **Social Application**에 구글 클라이언트 ID와 Secret Key를 등록하는 방법을 단계별로 상세히 안내했습니다.
+
+**98. `Provider ID` 필드 설명**
+
+*   **사용자 질문:** Social Application 등록 시 `Provider ID`에는 무엇을 넣어야 하는지 질문했습니다.
+*   **Gemini 답변:** 해당 필드는 비워두어도 되며, Provider 드롭다운에서 "Google"을 선택하는 것만으로 충분하다고 설명했습니다.
