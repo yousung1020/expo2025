@@ -1,26 +1,20 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
-# django의 기본 사용자 모델(AbstractUser를 상속받은 클래스)
-class UserInfo(AbstractUser):
-    def __str__(self):
-        return f"user id: {self.username}"
-
 class SensorData(models.Model):
-    user = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     sensor_data = models.IntegerField()
 
     def __str__(self):
         return f"sensor data: {self.sensor_data}"
 
 class CollectionReservation(models.Model):
-    user = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     collection_date = models.DateTimeField()
     type_of_garbage = models.CharField(max_length=5) # ex) 플라스틱, 캔, 유리
 
     def __str__(self):
-        return f"collection reservation date: {self.collection_date}"
+        return f"collection reservation date: {self.collection_date}" 
 
 
 # class AccountsKakaouser(models.Model):
